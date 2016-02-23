@@ -29,7 +29,9 @@ Usage:
 [Overview on Wikipedia](https://en.wikipedia.org/wiki/Thread_pool):
 ============
 
-Reasons for using a thread pool, rather than the obvious alternative of spawning one thread per task, are to prevent the time and memory overhead inherent in thread creation, and to avoid running out of resources such as open files or network connections (of which operating systems allocate a limited number to running programs).</br>
+Reasons for using a thread pool, rather than the obvious alternative of spawning one thread per task, are to prevent the time and memory overhead inherent in thread creation, and to avoid running out of resources such as open files or network connections (of which operating systems allocate a limited number to running programs).
+![A sample thread pool (green boxes) with waiting tasks (blue) and completed tasks (yellow)](http://7xr6bp.com1.z0.glb.clouddn.com/Thread_pool.png)
+</br>
 
 线程池的引用范围：
 ============
