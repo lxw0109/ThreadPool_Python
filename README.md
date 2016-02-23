@@ -1,3 +1,7 @@
+Software Demands:
+============
+Python 3.\*(On Python 2.7.\*,  only a couple of modifications to the sourcecode are required.)
+
 Thread pool
 ============
 This is a simple thread pool for python(using queue module).
@@ -29,6 +33,13 @@ def do_work(*args, **kwds):
     pool.destroy()
 ```
 
+Demo:
+============
+```Shell
+./runDemo.py
+```
+
+
 [Overview on Wikipedia](https://en.wikipedia.org/wiki/Thread_pool):
 ============
 
@@ -49,4 +60,3 @@ WEB服务器完成网页请求这样的任务，使用线程池技术是非常�
 NOTE:
 ============
 Forked from [yummybian/ThreadPool](https://github.com/yummybian/ThreadPool.git).</br>
-
