@@ -22,49 +22,60 @@ import threading
 
 
 class Worker(threading.Thread):
-    """Routines for work thread."""
+    """
+    Routines for work thread.
+    """
     def __init__(self, in_queue, out_queue, err_queue):
-        """Initialize and launch a work thread,
+        """
+        Initialize and launch a work thread,
         in_queue which tasks in it waiting for processing,
         out_queue which the return value of the task in it,
         err_queue which stores error info when processing the task.
         """
         threading.Thread.__init__(self)
         self.setDaemon(True)
-        self.in_queue = in_queue
-        self.out_queue = out_queue
-        self.err_queue = err_queue
+        self.in_queue = in_queue    #4-tuple: (command, callback, args, kwds)
+        self.out_queue = out_queue  #2-tuple or 3-tuple, etc. Determined by the type of return value of callback.
+        self.err_queue = err_queue  #2-tuple
+        #Start the thread once it is created.
         self.start()
 
     def run(self):
-        while True:
-            # Processing tasks in the in_queue until command is stop.
+        #while True:
+        while 1:
+            # Processing tasks in the in_queue until command is "stop".
+            # Similar to 360 interview: "args" and "kwds" can be assigned correctly. TODO: Prove this.
             command, callback, args, kwds = self.in_queue.get()
-            if command == 'stop':
+            if command == "stop":
                 break
             try:
-                if command != 'process':
-                    raise ValueError('Unknown command %r' % command)
+                if command != "process":
+                    raise ValueError("Unknown command %r" % command)
             except:
                 self.report_error()
             else:
                 self.out_queue.put(callback(*args, **kwds))
 
     def dismiss(self):
-        command = 'stop'
+        command = "stop"
         self.in_queue.put((command, None, None, None))
 
     def report_error(self):
-        '''We "report" errors by adding error information to err_queue.'''
+        """'''
+        We "report" errors by adding error information to err_queue.
+        """
         self.err_queue.put(sys.exc_info()[:2])
 
 
 class ThreadPool():
-    """Manager thread pool."""
+    """
+    Manager thread pool.
+    """
     max_threads = 32
 
     def __init__(self, num_threads, pool_size=0):
-        """Spawn num_threads threads in the thread pool,
+        """
+        Spawn num_threads threads in the thread pool,
         and initialize three queues.
         """
         # pool_size = 0 indicates buffer is unlimited.
@@ -76,7 +87,7 @@ class ThreadPool():
         self.out_queue = Queue.Queue(pool_size)
         self.err_queue = Queue.Queue(pool_size)
         """
-        self.in_queue = queue.Queue(pool_size)
+        self.in_queue = queue.Queue(pool_size)  # queue.Queue(maxsize=0)  If maxsize is less than or equal to zero, the queue size is infinite.
         self.out_queue = queue.Queue(pool_size)
         self.err_queue = queue.Queue(pool_size)
         self.workers = {}
@@ -89,11 +100,13 @@ class ThreadPool():
         self.in_queue.put((command, callback, args, kwds))
 
     def _get_results(self, queue):
-        '''Generator to yield one after the others all items currently
-           in the queue, without any waiting
-        '''
+        """
+        Generator to yield one after the others all items currently
+        in the queue, without any waiting
+        """
         try:
-            while True:
+            #while True:
+            while 1:
                 yield queue.get_nowait()
         except queue.Empty:
             raise StopIteration
