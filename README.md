@@ -4,34 +4,37 @@ This is a simple thread pool for python(using queue module).
 
 Install:
 ============
-
-        python setup.py install
+```Shell
+python setup.py install
+```
 
 Usage:
 ============
 
 - Firstly, you should define a callback to deal with your task.
 
-
-        def do_work(*args, **kwds):
-            # do something
-        
+```Python
+def do_work(*args, **kwds):
+    # do something
+```       
 - Then, you can create a thread pool to schedule your tasks.
     
-        from threadpool import ThreadPool
-        # Create thread pool with nums threads
-        pool = ThreadPool(nums)
-        # Add a task into pool
-        pool.add_task(do_work, args, kwds)
-        # Join and destroy all threads
-        pool.destroy()
+```Python
+    from threadpool import ThreadPool
+    # Create thread pool with nums threads
+    pool = ThreadPool(nums)
+    # Add a task into pool
+    pool.add_task(do_work, args, kwds)
+    # Join and destroy all threads
+    pool.destroy()
+```
 
 [Overview on Wikipedia](https://en.wikipedia.org/wiki/Thread_pool):
 ============
 
-Reasons for using a thread pool, rather than the obvious alternative of spawning one thread per task, are to prevent the time and memory overhead inherent in thread creation, and to avoid running out of resources such as open files or network connections (of which operating systems allocate a limited number to running programs).
-![A sample thread pool (green boxes) with waiting tasks (blue) and completed tasks (yellow)](http://7xr6bp.com1.z0.glb.clouddn.com/Thread_pool.png)
-</br>
+Reasons for using a thread pool, rather than the obvious alternative of spawning one thread per task, are to prevent the time and memory overhead inherent in thread creation, and to avoid running out of resources such as open files or network connections (of which operating systems allocate a limited number to running programs).</br>
+A sample thread pool (green boxes) with waiting tasks (blue) and completed tasks (yellow) is shown in the following picture.</br>
+![Thread Pool](http://7xr6bp.com1.z0.glb.clouddn.com/Thread_pool.png)
 
 线程池的引用范围：
 ============
@@ -45,6 +48,5 @@ WEB服务器完成网页请求这样的任务，使用线程池技术是非常�
 
 NOTE:
 ============
-Forked from [yummybian/ThreadPool](https://github.com/yummybian/ThreadPool.git).
-
+Forked from [yummybian/ThreadPool](https://github.com/yummybian/ThreadPool.git).</br>
 

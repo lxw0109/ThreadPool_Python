@@ -16,7 +16,8 @@
 #
 
 import sys
-import Queue
+#import Queue
+import queue
 import threading
 
 
@@ -70,9 +71,14 @@ class ThreadPool():
         num_threads = ThreadPool.max_threads \
             if num_threads > ThreadPool.max_threads \
             else num_threads
+        """
         self.in_queue = Queue.Queue(pool_size)
         self.out_queue = Queue.Queue(pool_size)
         self.err_queue = Queue.Queue(pool_size)
+        """
+        self.in_queue = queue.Queue(pool_size)
+        self.out_queue = queue.Queue(pool_size)
+        self.err_queue = queue.Queue(pool_size)
         self.workers = {}
         for i in range(num_threads):
             worker = Worker(self.in_queue, self.out_queue, self.err_queue)
@@ -89,7 +95,7 @@ class ThreadPool():
         try:
             while True:
                 yield queue.get_nowait()
-        except Queue.Empty:
+        except queue.Empty:
             raise StopIteration
 
     def get_task(self):
@@ -97,11 +103,13 @@ class ThreadPool():
 
     def show_results(self):
         for result in self._get_results(self.out_queue):
-            print 'Result:', result
+            #print 'Result:', result
+            print('Result:{0}'.format(result))
 
     def show_errors(self):
         for etyp, err in self._get_results(self.err_queue):
-            print 'Error:', etyp, err
+            #print 'Error:', etyp, err
+            print('Error:{0} {1}'.format(etyp, err))
 
     def destroy(self):
         # order is important: first, request all threads to stop...:
