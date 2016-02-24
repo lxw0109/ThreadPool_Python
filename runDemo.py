@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python2.7
 # FileName: runDemo.py
 # Author: lxw
 # Date: 2016-02-23
@@ -19,7 +19,8 @@ def echo(number):
     """
     #time.sleep(EXACT4THREADS0)
     time.sleep(QUEUE_THREADS0)
-    print("In echo(): {0}".format(number))
+    #print("In echo(): {0}".format(number))
+    print "In echo(): {0}".format(number)
 
 
 def main():
@@ -37,4 +38,5 @@ def main():
 if __name__ == '__main__':
     main()
 else:
-    print("Being imported as a module.")
+    #print("Being imported as a module.")
+    print "Being imported as a module."

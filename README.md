@@ -1,6 +1,6 @@
 Software Demands:
 ============
-Python 3.\*(On Python 2.7.\*,  only a couple of modifications to the sourcecode are required.)
+Python 2.7 +
 
 Thread pool
 ============

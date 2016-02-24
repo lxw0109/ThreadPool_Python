@@ -16,8 +16,8 @@
 #
 
 import sys
-#import Queue
-import queue
+import Queue
+#import queue
 import threading
 
 #"The Queue class in queue module implements all the required locking semantics.", so queue.Queue class is thread-safe?
@@ -85,7 +85,6 @@ class ThreadPool():
         num_threads = ThreadPool.MAX_THREADS \
             if num_threads > ThreadPool.MAX_THREADS \
             else num_threads
-        """
         self.in_queue = Queue.Queue(pool_size)
         self.out_queue = Queue.Queue(pool_size)
         self.err_queue = Queue.Queue(pool_size)
@@ -93,6 +92,7 @@ class ThreadPool():
         self.in_queue = queue.Queue(pool_size)  # queue.Queue(maxsize=0)  If maxsize is less than or equal to zero, the queue size is infinite.
         self.out_queue = queue.Queue(pool_size)
         self.err_queue = queue.Queue(pool_size)
+        """
         self.workers = {}
         for i in range(num_threads):
             worker = Worker(self.in_queue, self.out_queue, self.err_queue)
@@ -114,18 +114,19 @@ class ThreadPool():
             #while True:
             while 1:
                 yield queue.get_nowait()
-        except queue.Empty:
+        #except queue.Empty:
+        except Queue.Empty:
             raise StopIteration
 
     def show_results(self):
         for result in self._get_results(self.out_queue):
-            #print 'Result:', result
-            print('Result: {0}'.format(result))
+            print 'Result:', result
+            #print('Result: {0}'.format(result))
 
     def show_errors(self):
         for etyp, err in self._get_results(self.err_queue):
-            #print 'Error:', etyp, err
-            print('Error: {0} {1}'.format(etyp, err))
+            print 'Error:', etyp, err
+            #print('Error: {0} {1}'.format(etyp, err))
 
     def destroy(self):
         # order is important: first, request all threads to stop...:
