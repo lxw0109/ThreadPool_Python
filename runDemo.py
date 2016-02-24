@@ -6,11 +6,19 @@
 from threadpool.threadpool import ThreadPool
 import time
 
+EXACT4THREADS0 = 2
+EXACT4THREADS1 = 0.5
+
+#In this situation, more than 2 threads are in the queue during the process of running.
+QUEUE_THREADS0 = 3
+QUEUE_THREADS1 = 0.5
+
 def echo(number):
     """
     Echo with the parameter "number".
     """
-    time.sleep(3)
+    #time.sleep(EXACT4THREADS0)
+    time.sleep(QUEUE_THREADS0)
     print("In echo(): {0}".format(number))
 
 
@@ -21,6 +29,8 @@ def main():
     pool = ThreadPool(4)
     for number in range(20):
         pool.add_task(echo, number)
+        #time.sleep(EXACT4THREADS1)
+        time.sleep(QUEUE_THREADS1)
     pool.destroy()
 
 
