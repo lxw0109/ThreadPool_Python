@@ -20,6 +20,9 @@ import sys
 import queue
 import threading
 
+#"The Queue class in queue module implements all the required locking semantics.", so queue.Queue class is thread-safe?
+
+#KEY: Queue.get() and Queue.put() block until resource(an item/a slot) is available.
 
 class Worker(threading.Thread):
     """
@@ -71,7 +74,7 @@ class ThreadPool():
     """
     Manager thread pool.
     """
-    max_threads = 32
+    MAX_THREADS = 32
 
     def __init__(self, num_threads, pool_size=0):
         """
@@ -79,8 +82,8 @@ class ThreadPool():
         and initialize three queues.
         """
         # pool_size = 0 indicates buffer is unlimited.
-        num_threads = ThreadPool.max_threads \
-            if num_threads > ThreadPool.max_threads \
+        num_threads = ThreadPool.MAX_THREADS \
+            if num_threads > ThreadPool.MAX_THREADS \
             else num_threads
         """
         self.in_queue = Queue.Queue(pool_size)
@@ -99,6 +102,9 @@ class ThreadPool():
         command = 'process'
         self.in_queue.put((command, callback, args, kwds))
 
+    def get_task(self):
+        return self.out_queue.get()
+
     def _get_results(self, queue):
         """
         Generator to yield one after the others all items currently
@@ -111,18 +117,15 @@ class ThreadPool():
         except queue.Empty:
             raise StopIteration
 
-    def get_task(self):
-        return self.out_queue.get()
-
     def show_results(self):
         for result in self._get_results(self.out_queue):
             #print 'Result:', result
-            print('Result:{0}'.format(result))
+            print('Result: {0}'.format(result))
 
     def show_errors(self):
         for etyp, err in self._get_results(self.err_queue):
             #print 'Error:', etyp, err
-            print('Error:{0} {1}'.format(etyp, err))
+            print('Error: {0} {1}'.format(etyp, err))
 
     def destroy(self):
         # order is important: first, request all threads to stop...:
