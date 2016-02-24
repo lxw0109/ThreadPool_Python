@@ -105,6 +105,9 @@ class ThreadPool():
     def get_task(self):
         return self.out_queue.get()
 
+    def get_in_queue_size(self):
+        return self.in_queue.qsize()
+
     def _get_results(self, queue):
         """
         Generator to yield one after the others all items currently
@@ -134,6 +137,6 @@ class ThreadPool():
             self.workers[i].dismiss()
         # ...then, wait for each of them to terminate:
         for i in self.workers:
-            self.workers[i].join()
+            self.workers[i].join(1)
         # clean up the workers from now-unused thread objects
         del self.workers
