@@ -59,3 +59,7 @@ WEB服务器完成网页请求这样的任务，使用线程池技术是非常�
 NOTE:
 ============
 Forked from [yummybian/ThreadPool](https://github.com/yummybian/ThreadPool.git).</br>
+
+ISSUES:
+============
+1. Maybe we can set the parameters of "join()" in "destroy()".

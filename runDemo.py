@@ -33,6 +33,8 @@ def main():
         #time.sleep(EXACT4THREADS1)
         time.sleep(QUEUE_THREADS1)
     pool.destroy()
+    #QUEUE_THREADS0 & QUEUE_THREADS1 can prove that daemon thread "TERMINATES" with main thread.
+    print "Main Thread Terminates."
 
 
 if __name__ == '__main__':
