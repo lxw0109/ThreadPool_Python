@@ -76,22 +76,22 @@ class ThreadPool():
     """
     MAX_THREADS = 32
 
-    def __init__(self, num_threads, pool_size=0):
+    def __init__(self, num_threads, buffer_size=0):
         """
         Spawn num_threads threads in the thread pool,
         and initialize three queues.
         """
-        # pool_size = 0 indicates buffer is unlimited.
+        # buffer_size = 0 indicates buffer is unlimited.
         num_threads = ThreadPool.MAX_THREADS \
             if num_threads > ThreadPool.MAX_THREADS \
             else num_threads
-        self.in_queue = Queue.Queue(pool_size)
-        self.out_queue = Queue.Queue(pool_size)
-        self.err_queue = Queue.Queue(pool_size)
+        self.in_queue = Queue.Queue(buffer_size)
+        self.out_queue = Queue.Queue(buffer_size)
+        self.err_queue = Queue.Queue(buffer_size)
         """
-        self.in_queue = queue.Queue(pool_size)  # queue.Queue(maxsize=0)  If maxsize is less than or equal to zero, the queue size is infinite.
-        self.out_queue = queue.Queue(pool_size)
-        self.err_queue = queue.Queue(pool_size)
+        self.in_queue = queue.Queue(buffer_size)  # queue.Queue(maxsize=0)  If maxsize is less than or equal to zero, the queue size is infinite.
+        self.out_queue = queue.Queue(buffer_size)
+        self.err_queue = queue.Queue(buffer_size)
         """
         self.workers = {}
         for i in range(num_threads):
