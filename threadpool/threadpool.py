@@ -137,6 +137,6 @@ class ThreadPool():
             self.workers[i].dismiss()
         # ...then, wait for each of them to terminate:
         for i in self.workers:
-            self.workers[i].join(1)
+            self.workers[i].join()
         # clean up the workers from now-unused thread objects
         del self.workers
