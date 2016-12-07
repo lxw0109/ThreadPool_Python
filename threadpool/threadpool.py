@@ -20,6 +20,7 @@ import sys
 import Queue
 #import queue
 import threading
+import logging  
 
 """
 The Queue module implements multi-producer, multi-consumer queues. It is especially useful
@@ -28,6 +29,12 @@ The Queue class in this module implements all the required locking semantics.
 """
 
 #KEY: Queue.get() and Queue.put() block until resource(an item/a slot) is available.
+
+logging.basicConfig(level=logging.DEBUG,  
+                    format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s: %(message)s',  
+                    datefmt='%a, %d %b %Y %H:%M:%S',  
+                    filename='./threadpool.log',  
+                    filemode='w')  
 
 class Worker(threading.Thread):
     """
@@ -40,6 +47,7 @@ class Worker(threading.Thread):
         out_queue contains the return value of the task in it,
         err_queue stores error info when processing the task.
         """
+        logging.debug("in threadpool.Worker.__init__()")
         threading.Thread.__init__(self)
         self.setDaemon(True)
         self.in_queue = in_queue    #4-tuple: (command, callback, args, kwds)
@@ -50,6 +58,7 @@ class Worker(threading.Thread):
 
     def run(self):
         # NOTE：这里的run()不是直接执行需要完成的工作，而是从in_queue中获取一个task，然后执行这个task
+        logging.debug("in threadpool.Worker.run()")
         while 1:
             # Processing tasks in the in_queue until command is "stop".
             # Similar to 360 interview: "args" and "kwds" can be assigned correctly.
@@ -66,6 +75,7 @@ class Worker(threading.Thread):
                 self.out_queue.put(callback(*args, **kwds)) #blocked on out_queue.put() if no slot in out_queue
 
     def dismiss(self):
+        logging.debug("in threadpool.Worker.dismiss()")
         command = "stop"
         self.in_queue.put((command, None, None, None))
 
@@ -73,6 +83,7 @@ class Worker(threading.Thread):
         """'''
         We "report" errors by adding error information to err_queue.
         """
+        logging.debug("in threadpool.Worker.report_error()")
         self.err_queue.put(sys.exc_info()[:2])
 
 
@@ -86,6 +97,8 @@ class ThreadPool():
         """
         Spawn num_threads threads in the thread pool, and initialize three queues.
         """
+        logging.debug("in threadpool.ThreadPool.__init__()")
+
         # buffer_size = 0 indicates buffer is unlimited.
         num_threads = ThreadPool.MAX_THREADS \
             if num_threads > ThreadPool.MAX_THREADS \
@@ -100,19 +113,23 @@ class ThreadPool():
             self.workers[i] = worker
 
     def add_task(self, callback, *args, **kwds):
+        logging.debug("in threadpool.ThreadPool.add_task()")
         command = 'process'
         self.in_queue.put((command, callback, args, kwds))  #NOTE: here not *args, **kwds.  Why?
 
     def get_task(self):
+        logging.debug("in threadpool.ThreadPool.get_task()")
         return self.out_queue.get()
 
     def get_in_queue_size(self):
+        logging.debug("in threadpool.ThreadPool.get_in_queue_size()")
         return self.in_queue.qsize()
 
     def _get_results(self, queue):
         """
         Generator to yield one after another of all items currently in the queue, without any waiting
         """
+        logging.debug("in threadpool.ThreadPool._get_results()")
         try:
             while 1:
                 yield queue.get_nowait()
@@ -120,14 +137,17 @@ class ThreadPool():
             raise StopIteration
 
     def show_results(self):
+        logging.debug("in threadpool.ThreadPool.show_results()")
         for result in self._get_results(self.out_queue):
             print("Result: {0}".format(result))
 
     def show_errors(self):
+        logging.debug("in threadpool.ThreadPool.show_errors()")
         for etyp, err in self._get_results(self.err_queue):
             print('Error: {0} {1}'.format(etyp, err))
 
     def destroy(self):
+        logging.debug("in threadpool.ThreadPool.destroy()")
         #order is important: firstly, request all threads to stop.
         for i in self.workers:
             self.workers[i].dismiss()
