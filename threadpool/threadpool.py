@@ -29,6 +29,7 @@ The Queue class in this module implements all the required locking semantics.
 """
 
 #KEY: Queue.get() and Queue.put() block until resource(an item/a slot) is available.
+#NOTE: when using threadpool, the threadpool.destroy() is ESSENTIAL to revoke.
 
 logging.basicConfig(level=logging.DEBUG,  
                     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s: %(message)s',  
